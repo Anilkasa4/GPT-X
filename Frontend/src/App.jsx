@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 
-// 1. The Authentication Component (Login & Register)
 function Auth({ setToken }) {
     const [isLogin, setIsLogin] = useState(true);
     const [username, setUsername] = useState('');
@@ -26,7 +25,7 @@ function Auth({ setToken }) {
             
             if (isLogin) {
                 setToken(data.token);
-                localStorage.setItem('token', data.token); // Save the JWT wristband to the browser
+                localStorage.setItem('token', data.token); 
             } else {
                 setIsLogin(true);
                 setError('Registration successful! Please login.');
@@ -83,8 +82,6 @@ function Auth({ setToken }) {
     );
 }
 
-
-// 2. The Main Chat Application Component
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [messages, setMessages] = useState([]);
@@ -92,14 +89,13 @@ function App() {
   const [isTyping, setIsTyping] = useState(false);
 
   const fetchMessages = () => {
-    // Note: Once we secure this endpoint, we'll need to pass the token in the headers here too!
+
     fetch('http://localhost:5000/api/messages')
       .then(response => response.json())
       .then(data => setMessages(data))
       .catch(error => console.error("Error fetching data:", error));
   };
 
-  // Fetch messages when the component loads or when the user logs in
   useEffect(() => {
     if (token) {
         fetchMessages();
@@ -111,7 +107,6 @@ function App() {
     localStorage.removeItem('token');
   };
 
-  // The Bouncer: If there is no token, stop rendering the chat and show the Login screen instead
   if (!token) {
     return <Auth setToken={setToken} />;
   }
@@ -122,7 +117,6 @@ function App() {
 
     setIsTyping(true);
 
-    // Note: Once we secure this endpoint, we'll need to pass the token in the headers here too!
     fetch('http://localhost:5000/api/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

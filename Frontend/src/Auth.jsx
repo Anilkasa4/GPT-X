@@ -23,7 +23,7 @@ function Auth({ setToken }) {
             
             if (isLogin) {
                 setToken(data.token);
-                localStorage.setItem('token', data.token); // Save wristband to browser
+                localStorage.setItem('token', data.token);
             } else {
                 setIsLogin(true);
                 setError('Registration successful! Please login.');

@@ -15,7 +15,6 @@ app.use(cors({
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 
-// 1. Database Connection with Auto-Retry
 const connectWithRetry = () => {
     console.log("Attempting to connect to MongoDB...");
     
@@ -31,7 +30,6 @@ const connectWithRetry = () => {
 
 connectWithRetry();
 
-// 2. Updated Schema (Now includes 'role')
 const MessageSchema = new mongoose.Schema({
     role: String,
     text: String,
@@ -39,14 +37,12 @@ const MessageSchema = new mongoose.Schema({
 });
 const Message = mongoose.model('Message', MessageSchema);
 
-// 3. Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const aiModel = genAI.getGenerativeModel({ 
     model: "gemini-3.1-flash-lite",
     systemInstruction: "You are GPT-X, a helpful and concise AI."
 });
 
-// 4. GET Route: Fetch history
 app.get('/api/messages', async (req, res) => {
     try {
         const messages = await Message.find().sort({ createdAt: 1 });
@@ -56,7 +52,6 @@ app.get('/api/messages', async (req, res) => {
     }
 });
 
-// 5. POST Route: The Chat Logic
 app.post('/api/messages', async (req, res) => {
     try {
         const userText = req.body.text;

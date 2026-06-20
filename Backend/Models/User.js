@@ -18,7 +18,6 @@ const userSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-// Fixed: Removed next() since we are using an async function (Mongoose 8 standard)
 userSchema.pre('save', async function() {
     if (!this.isModified('password')) return;
     const salt = await bcrypt.genSalt(10);

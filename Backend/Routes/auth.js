@@ -4,13 +4,9 @@ import jwt from 'jsonwebtoken';
 import User from '../Models/User.js';
 
 const router = express.Router();
-
-// 1. REGISTRATION ROUTE
 router.post('/register', async (req, res) => {
     try {
         const { username, email, password } = req.body;
-        
-        // Fixed: Check if either the email OR the username is already taken
         const existingUser = await User.findOne({ $or: [{ email }, { username }] });
         if (existingUser) {
             return res.status(400).json({ message: "Username or Email is already taken!" });
@@ -25,8 +21,6 @@ router.post('/register', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
-
-// 2. LOGIN ROUTE
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -37,7 +31,6 @@ router.post('/login', async (req, res) => {
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
         if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials" });
 
-        // Generate the JWT "Wristband"
         const token = jwt.sign(
             { id: user._id }, 
             process.env.JWT_SECRET, 
